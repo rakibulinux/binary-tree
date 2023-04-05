@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express();
 const { MongoClient, ObjectId } = require("mongodb");
+const cors = require("cors");
+require("dotenv").config();
+
+// Middleware Connections
+app.use(cors());
+app.use(express.json());
 
 // Mongo Connection URL
 const url = "mongodb://localhost:27017/";
@@ -18,7 +24,7 @@ app.get("/search/:startNodeId", async (req, res) => {
     // Get the starting node from the database
     const startNode = await db
       .collection("nodes")
-      .findOne({ _id: ObjectId(startNodeId) });
+      .findOne({ _id: new ObjectId(startNodeId) });
 
     // Initialize the queue with the starting node
     const queue = [startNode];
@@ -54,6 +60,8 @@ app.get("/search/:startNodeId", async (req, res) => {
   }
 });
 
+// Connection
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log("App running in port: " + PORT);
 });
